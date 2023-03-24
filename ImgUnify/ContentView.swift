@@ -8,14 +8,25 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var isVertical = false
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        HStack {
+            FileView()
+            FileView() 
         }
         .padding()
+        .toolbar {
+            ToolbarItemGroup {
+
+                // FIXME: add toggle for vertical
+                /*Toggle(isOn: $isVertical) {
+                    if (isVertical) {
+                        
+                    }
+                }*/
+                Button("Copy") { }
+            }
+        }
     }
 }
 
