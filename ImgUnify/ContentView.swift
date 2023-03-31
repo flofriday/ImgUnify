@@ -17,9 +17,18 @@ struct ContentView: View {
                     .italic()
             } else {
                 HStack {
-                    ForEach(self.files, id: \.self.path) {
-                        FileView(file: $0)
+                    HStack {
+                        ForEach(self.files, id: \.self.name) {
+                            FileView(file: $0)
+                        }
                     }
+                    Image(systemName: "arrow.right")
+                    FileView(
+                        file: File(
+                            name: "unified",
+                            image: unified(images: files.map { $0.image })
+                        )
+                    )
                 }
             }
             HStack {
@@ -32,14 +41,24 @@ struct ContentView: View {
                         self.files.append(contentsOf:
                             panel.urls.map { File(
                                 name: $0.lastPathComponent,
-                                path: $0.relativePath) }
+                                // FIXME: This might fail
+                                image: NSImage(contentsOfFile: $0.relativePath)!
+                            ) }
                         )
                     }
                 }
                 Button("Clear") {
                     self.files = []
                 }
-                Button("Copy") {}
+                .disabled(files.isEmpty)
+                Button("Copy") {
+                    let pb = NSPasteboard.general
+                    pb.clearContents()
+                    // FIXME: Select the correct file
+                    let file = unified(images: self.files.map { $0.image })
+                    pb.writeObjects([file])
+                }
+                .disabled(files.isEmpty)
             }
         }
         .padding()

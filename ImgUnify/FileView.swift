@@ -14,13 +14,11 @@ struct FileView: View {
 
     var body: some View {
         VStack {
-            // Image(systemName: "photo")
-            // Image(data: Data(contentsOf: path))
-            Image(nsImage: NSImage(contentsOfFile: file.path)!)
-                // .antialiased(true)
+            Image(nsImage: file.image)
                 .interpolation(.high)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
+                // FIXME: If the Image is in portrait we should instead limit the height to 60
                 .frame(maxWidth: 60)
                 .cornerRadius(2)
                 .overlay(
