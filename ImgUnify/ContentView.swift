@@ -8,33 +8,36 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var fileNames: [String] = []
+    @State private var files: [File] = []
 
     var body: some View {
         VStack {
-            if fileNames.isEmpty {
+            if files.isEmpty {
                 Text("No files selected")
                     .italic()
             } else {
-                VStack {
-                    ForEach(self.fileNames, id: \.self) {
-                        Text($0)
+                HStack {
+                    ForEach(self.files, id: \.self.path) {
+                        FileView(file: $0)
                     }
                 }
             }
             HStack {
                 Button("Open") {
                     let panel = NSOpenPanel()
+                    // FIXME: only set image types
                     panel.allowsMultipleSelection = true
                     panel.canChooseDirectories = false
                     if panel.runModal() == .OK {
-                        self.fileNames.append(contentsOf:
-                            panel.urls.map { $0.relativePath }
+                        self.files.append(contentsOf:
+                            panel.urls.map { File(
+                                name: $0.lastPathComponent,
+                                path: $0.relativePath) }
                         )
                     }
                 }
                 Button("Clear") {
-                    self.fileNames = []
+                    self.files = []
                 }
                 Button("Copy") {}
             }
