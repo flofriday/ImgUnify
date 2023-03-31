@@ -8,25 +8,38 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var isVertical = false
-    var body: some View {
-        HStack {
-            FileView()
-            FileView() 
-        }
-        .padding()
-        .toolbar {
-            ToolbarItemGroup {
+    @State private var fileNames: [String] = []
 
-                // FIXME: add toggle for vertical
-                /*Toggle(isOn: $isVertical) {
-                    if (isVertical) {
-                        
+    var body: some View {
+        VStack {
+            if fileNames.isEmpty {
+                Text("No files selected")
+                    .italic()
+            } else {
+                VStack {
+                    ForEach(self.fileNames, id: \.self) {
+                        Text($0)
                     }
-                }*/
-                Button("Copy") { }
+                }
+            }
+            HStack {
+                Button("Open") {
+                    let panel = NSOpenPanel()
+                    panel.allowsMultipleSelection = true
+                    panel.canChooseDirectories = false
+                    if panel.runModal() == .OK {
+                        self.fileNames.append(contentsOf:
+                            panel.urls.map { $0.relativePath }
+                        )
+                    }
+                }
+                Button("Clear") {
+                    self.fileNames = []
+                }
+                Button("Copy") {}
             }
         }
+        .padding()
     }
 }
 
